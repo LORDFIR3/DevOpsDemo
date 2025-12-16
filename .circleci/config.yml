@@ -57,7 +57,8 @@ jobs:
       - run:
           name: Install Trivy and Scan Image
           command: |
-            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+            # ДОДАНО sudo для запису в /usr/local/bin
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
             
             # Сканування з виходом при критичних помилках
             trivy image --exit-code 1 --severity CRITICAL --no-progress calc-api:latest
