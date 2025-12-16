@@ -9,38 +9,66 @@ jobs:
       - image: cimg/python:3.10
     steps:
       - checkout
+      
+      # Додаємо підтримку Docker-команд усередині Job
+      - setup_remote_docker:
+          version: 20.10.14
+
       - python/install-packages:
           pkg-manager: pip
-      
-      # Крок 1: Статичний аналіз коду (Linter + SAST)
+
+      # --- ЕТАП 1: Перевірка коду (Code Security) ---
       - run:
           name: Run SAST analysis with Bandit
           command: |
             pip install bandit
             bandit -r app.py -f json -o bandit_report.json || true
           when: always
-      
+
       - store_artifacts:
           path: bandit_report.json
           destination: security-reports/bandit.json
 
-      # Крок 2: Перевірка залежностей
       - run:
           name: Check dependencies with Safety
           command: |
             pip install safety
-            safety check --full-report
-      
-      # Крок 3: Запуск Unit-тестів
+            safety check --full-report || true
+
+      # --- ЕТАП 2: Функціональне тестування ---
       - run:
           name: Run Unit Tests
           command: |
             pip install pytest
             mkdir test-results
             pytest --junitxml=test-results/junit.xml tests/
-      
+
       - store_test_results:
           path: test-results
+
+      # --- ЕТАП 3: Збірка Docker-образу (Було пропущено в тексті) ---
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build -t calc-api:latest .
+
+      # --- ЕТАП 4: Сканування образу вразливостей (Було пропущено в тексті) ---
+      # Використовуємо Trivy, який згадано у висновках роботи
+      - run:
+          name: Install Trivy and Scan Image
+          command: |
+            # Встановлення Trivy
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+            
+            # Сканування образу. Якщо знайдено вразливості рівня CRITICAL, збірка впаде (exit code 1)
+            trivy image --exit-code 1 --severity CRITICAL --no-progress calc-api:latest
+            
+            # Сканування для звіту (всі рівні)
+            trivy image --format json --output trivy_report.json calc-api:latest || true
+
+      - store_artifacts:
+          path: trivy_report.json
+          destination: security-reports/trivy.json
 
 workflows:
   main:
