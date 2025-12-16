@@ -11,8 +11,8 @@ jobs:
       - checkout
       
       # Додаємо підтримку Docker-команд усередині Job
-      - setup_remote_docker:
-          version: 20.10.14
+      #- setup_remote_docker:
+      #    version: 20.10.14
 
       - python/install-packages:
           pkg-manager: pip
