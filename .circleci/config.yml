@@ -40,8 +40,9 @@ jobs:
           name: Run Unit Tests
           command: |
             pip install pytest
-            mkdir test-results
-            pytest --junitxml=test-results/junit.xml tests/
+            mkdir -p test-results
+            # ДОДАНО: PYTHONPATH=. перед командою pytest
+            PYTHONPATH=. pytest --junitxml=test-results/junit.xml tests/
 
       - store_test_results:
           path: test-results
