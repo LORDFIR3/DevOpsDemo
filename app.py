@@ -13,8 +13,8 @@ def multiply(a, b):
 
 def divide(a, b):
     if b == 0:
-        #raise ValueError("Cannot divide by zero")
-        pass
+        raise ValueError("Cannot divide by zero")
+        #pass
     return a / b
 
 @app.route('/calc', methods=['POST'])
@@ -52,4 +52,4 @@ def calculate():
 
 if __name__ == '__main__':
     # Вразливість для Bandit: debug=True не має бути в продакшні
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
