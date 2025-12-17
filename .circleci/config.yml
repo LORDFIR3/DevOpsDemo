@@ -33,7 +33,7 @@ jobs:
             bandit -r app.py -f json -o bandit_report.json --exit-zero
             
             # Виводимо результат в консоль, щоб ви могли зробити скріншот помилки debug=True
-            bandit -r app.py -ll high
+            bandit -r app.py -l high
           when: always
 
       - store_artifacts:
