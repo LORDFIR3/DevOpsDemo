@@ -21,8 +21,19 @@ jobs:
       - run:
           name: Run SAST analysis with Bandit
           command: |
-            pip install bandit
+            pip install --upgrade pip
+            pip install pbr             # Виправляє помилку ModuleNotFoundError
+            pip install --upgrade bandit # Встановлює новішу версію замість 1.7.0
+            
+            # Створюємо папку для звіту, якщо її немає (про всяк випадок)
+            mkdir -p security-reports
+            
+            # Запускаємо сканування. 
+            # || true гарантує, що пайплайн не впаде одразу, і ми отримаємо звіт
             bandit -r app.py -f json -o bandit_report.json || true
+            
+            # Виводимо результат в консоль, щоб ви могли зробити скріншот помилки debug=True
+            bandit -r app.py -f screen || true
           when: always
 
       - store_artifacts:
