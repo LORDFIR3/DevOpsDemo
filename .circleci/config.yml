@@ -30,10 +30,10 @@ jobs:
             
             # Запускаємо сканування. 
             # || true гарантує, що пайплайн не впаде одразу, і ми отримаємо звіт
-            bandit -r app.py -f json -o bandit_report.json || true
+            bandit -r app.py -f json -o bandit_report.json --exit-zero
             
             # Виводимо результат в консоль, щоб ви могли зробити скріншот помилки debug=True
-            bandit -r app.py -f screen || true
+            bandit -r app.py -ll high -f screen
           when: always
 
       - store_artifacts:
