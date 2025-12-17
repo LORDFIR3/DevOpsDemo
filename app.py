@@ -52,5 +52,4 @@ def calculate():
 
 if __name__ == '__main__':
     # Вразливість для Bandit: debug=True не має бути в продакшні
-    debug=True
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
